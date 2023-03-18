@@ -16,7 +16,7 @@ export interface AuthState {
 export const useAuthStore = defineStore('auth-store', {
   state: (): AuthState => ({
     token: getToken(),
-    session: null,
+    session: { model: 'ChatGPTAPI', auth: true },
   }),
 
   getters: {
