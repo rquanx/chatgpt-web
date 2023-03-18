@@ -46,7 +46,7 @@ function http<T = any>(
 
   return method === 'GET'
     ? request.get('', { params, signal, onDownloadProgress }).then(successHandler, failHandler)
-    : request.post('', { ...params, name: url.startsWith('/') ? url.slice(1) : url, token: '' }, { headers, signal, onDownloadProgress }).then(successHandler, failHandler)
+    : request.post('', { ...params, name: url.startsWith('/') ? url.slice(1) : url }, { headers, signal, onDownloadProgress }).then(successHandler, failHandler)
 }
 
 export function get<T = any>(
