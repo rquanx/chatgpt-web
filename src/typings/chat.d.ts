@@ -29,7 +29,6 @@ declare namespace Chat {
 	}
 
 	interface ConversationResponse {
-		conversationId: string
 		detail: {
 			choices: { finish_reason: string; index: number; logprobs: any; text: string }[]
 			created: number

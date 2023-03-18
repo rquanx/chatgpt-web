@@ -41,9 +41,9 @@ const conversationList = computed(() => dataSources.value.filter(item => (!item.
 const prompt = ref<string>('')
 const loading = ref<boolean>(false)
 
-// 添加PromptStore
+// 添加 PromptStore
 const promptStore = usePromptStore()
-// 使用storeToRefs，保证store修改后，联想部分能够重新渲染
+// 使用 storeToRefs，保证 store 修改后，联想部分能够重新渲染
 const { promptList: promptTemplate } = storeToRefs<any>(promptStore)
 
 function handleSubmit() {
@@ -51,7 +51,7 @@ function handleSubmit() {
 }
 
 async function onConversation() {
-  let message = prompt.value
+  const message = prompt.value
 
   if (loading.value)
     return
@@ -98,50 +98,25 @@ async function onConversation() {
   scrollToBottom()
 
   try {
-    let lastText = ''
     const fetchChatAPIOnce = async () => {
-      await fetchChatAPIProcess<Chat.ConversationResponse>({
+      const { text, id } = await fetchChatAPIProcess<Chat.ConversationResponse>({
         prompt: message,
         options,
         signal: controller.signal,
-        onDownloadProgress: ({ event }) => {
-          const xhr = event.target
-          const { responseText } = xhr
-          // Always process the final line
-          const lastIndex = responseText.lastIndexOf('\n')
-          let chunk = responseText
-          if (lastIndex !== -1)
-            chunk = responseText.substring(lastIndex)
-          try {
-            const data = JSON.parse(chunk)
-            updateChat(
-              +uuid,
-              dataSources.value.length - 1,
-              {
-                dateTime: new Date().toLocaleString(),
-                text: lastText + data.text ?? '',
-                inversion: false,
-                error: false,
-                loading: false,
-                conversationOptions: { conversationId: data.conversationId, parentMessageId: data.id },
-                requestOptions: { prompt: message, options: { ...options } },
-              },
-            )
-
-            if (openLongReply && data.detail.choices[0].finish_reason === 'length') {
-              options.parentMessageId = data.id
-              lastText = data.text
-              message = ''
-              return fetchChatAPIOnce()
-            }
-
-            scrollToBottom()
-          }
-          catch (error) {
-          //
-          }
-        },
       })
+      updateChat(
+        +uuid,
+        dataSources.value.length - 1,
+        {
+          dateTime: new Date().toLocaleString(),
+          text,
+          inversion: false,
+          error: false,
+          loading: false,
+          conversationOptions: { parentMessageId: id },
+          requestOptions: { prompt: message, options: { ...options } },
+        },
+      )
     }
 
     await fetchChatAPIOnce()
@@ -204,7 +179,7 @@ async function onRegenerate(index: number) {
 
   const { requestOptions } = dataSources.value[index]
 
-  let message = requestOptions?.prompt ?? ''
+  const message = requestOptions?.prompt ?? ''
 
   let options: Chat.ConversationRequest = {}
 
@@ -228,48 +203,27 @@ async function onRegenerate(index: number) {
   )
 
   try {
-    let lastText = ''
+    const lastText = ''
     const fetchChatAPIOnce = async () => {
-      await fetchChatAPIProcess<Chat.ConversationResponse>({
+      const { text, id } = await fetchChatAPIProcess<Chat.ConversationResponse>({
         prompt: message,
         options,
         signal: controller.signal,
-        onDownloadProgress: ({ event }) => {
-          const xhr = event.target
-          const { responseText } = xhr
-          // Always process the final line
-          const lastIndex = responseText.lastIndexOf('\n')
-          let chunk = responseText
-          if (lastIndex !== -1)
-            chunk = responseText.substring(lastIndex)
-          try {
-            const data = JSON.parse(chunk)
-            updateChat(
-              +uuid,
-              index,
-              {
-                dateTime: new Date().toLocaleString(),
-                text: lastText + data.text ?? '',
-                inversion: false,
-                error: false,
-                loading: false,
-                conversationOptions: { conversationId: data.conversationId, parentMessageId: data.id },
-                requestOptions: { prompt: message, ...options },
-              },
-            )
-
-            if (openLongReply && data.detail.choices[0].finish_reason === 'length') {
-              options.parentMessageId = data.id
-              lastText = data.text
-              message = ''
-              return fetchChatAPIOnce()
-            }
-          }
-          catch (error) {
-            //
-          }
-        },
       })
+
+      updateChat(
+        +uuid,
+        dataSources.value.length - 1,
+        {
+          dateTime: new Date().toLocaleString(),
+          text,
+          inversion: false,
+          error: false,
+          loading: false,
+          conversationOptions: { parentMessageId: id },
+          requestOptions: { prompt: message, options: { ...options } },
+        },
+      )
     }
     await fetchChatAPIOnce()
   }
@@ -401,8 +355,8 @@ function handleStop() {
 }
 
 // 可优化部分
-// 搜索选项计算，这里使用value作为索引项，所以当出现重复value时渲染异常(多项同时出现选中效果)
-// 理想状态下其实应该是key作为索引项,但官方的renderOption会出现问题，所以就需要value反renderLabel实现
+// 搜索选项计算，这里使用 value 作为索引项，所以当出现重复 value 时渲染异常 (多项同时出现选中效果)
+// 理想状态下其实应该是 key 作为索引项，但官方的 renderOption 会出现问题，所以就需要 value 反 renderLabel 实现
 const searchOptions = computed(() => {
   if (prompt.value.startsWith('/')) {
     return promptTemplate.value.filter((item: { key: string }) => item.key.toLowerCase().includes(prompt.value.substring(1).toLowerCase())).map((obj: { value: any }) => {
@@ -417,7 +371,7 @@ const searchOptions = computed(() => {
   }
 })
 
-// value反渲染key
+// value 反渲染 key
 const renderOption = (option: { label: string }) => {
   for (const i of promptTemplate.value) {
     if (i.value === option.label)

@@ -24,14 +24,11 @@ function http<T = any>(
 ) {
   const successHandler = (res: AxiosResponse<Response<T>>) => {
     const authStore = useAuthStore()
-
-    if (res.data.status === 'Success' || typeof res.data === 'string')
+    if (res.status === 200)
       return res.data
 
-    if (res.data.status === 'Unauthorized') {
-      authStore.removeToken()
-      window.location.reload()
-    }
+    authStore.removeToken()
+    window.location.reload()
 
     return Promise.reject(res.data)
   }
@@ -48,8 +45,8 @@ function http<T = any>(
   const params = Object.assign(typeof data === 'function' ? data() : data ?? {}, {})
 
   return method === 'GET'
-    ? request.get(url, { params, signal, onDownloadProgress }).then(successHandler, failHandler)
-    : request.post(url, params, { headers, signal, onDownloadProgress }).then(successHandler, failHandler)
+    ? request.get('', { params, signal, onDownloadProgress }).then(successHandler, failHandler)
+    : request.post('', { ...params, name: url.startsWith('/') ? url.slice(1) : url, token: '' }, { headers, signal, onDownloadProgress }).then(successHandler, failHandler)
 }
 
 export function get<T = any>(

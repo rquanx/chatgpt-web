@@ -24,14 +24,15 @@ export function fetchChatAPIProcess<T = any>(
     prompt: string
     options?: { conversationId?: string; parentMessageId?: string }
     signal?: GenericAbortSignal
-    onDownloadProgress?: (progressEvent: AxiosProgressEvent) => void },
+    onDownloadProgress?: (progressEvent: AxiosProgressEvent) => void
+  },
 ) {
   return post<T>({
     url: '/chat-process',
     data: { prompt: params.prompt, options: params.options },
     signal: params.signal,
     onDownloadProgress: params.onDownloadProgress,
-  })
+  }) as unknown as Promise<{ text: string; conversationId: string; id: string; parentMessageId: string }>
 }
 
 export function fetchSession<T>() {
@@ -44,5 +45,12 @@ export function fetchVerify<T>(token: string) {
   return post<T>({
     url: '/verify',
     data: { token },
+  })
+}
+
+export function remove<T>(conversationId: string) {
+  return post<T>({
+    url: '/remove',
+    data: { payload: conversationId },
   })
 }

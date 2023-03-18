@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { getLocalState, setLocalState } from './helper'
 import { router } from '@/router'
+import { remove } from '@/api'
 
 export const useChatStore = defineStore('chat-store', {
   state: (): Chat.ChatState => getLocalState(),
@@ -44,9 +45,11 @@ export const useChatStore = defineStore('chat-store', {
     },
 
     async deleteHistory(index: number) {
+      const chats = this.chat?.[index]?.data
+      const parentMessageId = chats?.[chats?.length - 1]?.conversationOptions?.parentMessageId
+      parentMessageId && remove(parentMessageId)
       this.history.splice(index, 1)
       this.chat.splice(index, 1)
-
       if (this.history.length === 0) {
         this.active = null
         this.reloadRoute()
