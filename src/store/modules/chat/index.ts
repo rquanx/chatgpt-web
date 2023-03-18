@@ -3,6 +3,11 @@ import { getLocalState, setLocalState } from './helper'
 import { router } from '@/router'
 import { remove } from '@/api'
 
+const removeCache = (chat: Chat.ChatState['chat'], index: number) => {
+  const chats = chat?.[index]?.data
+  const parentMessageId = chats?.[chats?.length - 1]?.conversationOptions?.parentMessageId
+  parentMessageId && remove(parentMessageId)
+}
 export const useChatStore = defineStore('chat-store', {
   state: (): Chat.ChatState => getLocalState(),
 
@@ -45,9 +50,7 @@ export const useChatStore = defineStore('chat-store', {
     },
 
     async deleteHistory(index: number) {
-      const chats = this.chat?.[index]?.data
-      const parentMessageId = chats?.[chats?.length - 1]?.conversationOptions?.parentMessageId
-      parentMessageId && remove(parentMessageId)
+      removeCache(this.chat, index)
       this.history.splice(index, 1)
       this.chat.splice(index, 1)
       if (this.history.length === 0) {
@@ -172,6 +175,7 @@ export const useChatStore = defineStore('chat-store', {
     clearChatByUuid(uuid: number) {
       if (!uuid || uuid === 0) {
         if (this.chat.length) {
+          removeCache(this.chat, 0)
           this.chat[0].data = []
           this.recordState()
         }
@@ -180,6 +184,7 @@ export const useChatStore = defineStore('chat-store', {
 
       const index = this.chat.findIndex(item => item.uuid === uuid)
       if (index !== -1) {
+        removeCache(this.chat, index)
         this.chat[index].data = []
         this.recordState()
       }
