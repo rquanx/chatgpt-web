@@ -8,10 +8,12 @@
 
 > 声明：此项目只发布于 Github，基于 MIT 协议，免费且作为开源学习使用。并且不会有任何形式的卖号、付费服务、讨论群、讨论组等行为。谨防受骗。
 
+
 ![cover](./docs/c1.png)
 ![cover2](./docs/c2.png)
 
 - [ChatGPT Web](#chatgpt-web)
+	- [修改](#修改)
 	- [介绍](#介绍)
 	- [待实现路线](#待实现路线)
 	- [前置要求](#前置要求)
@@ -39,6 +41,17 @@
 	- [参与贡献](#参与贡献)
 	- [赞助](#赞助)
 	- [License](#license)
+
+## 修改
+
+[在线预览](https://my-chatgpt.netlify.app/)
+
+- 去除 session 处理
+- 通过 token 进行认证（可自定义分发 token）
+- 去除打字机效果（接口懒得适配）
+- 不用后端，修改 build 命令
+- 设置界面去除无关项
+
 ## 介绍
 
 支持双模型，提供了两种非官方 `ChatGPT API` 方法
@@ -216,9 +229,9 @@ services:
       OPENAI_API_KEY: sk-xxx
       # 二选一
       OPENAI_ACCESS_TOKEN: xxx
-      # API接口地址，可选，设置 OPENAI_API_KEY 时可用
+      # API 接口地址，可选，设置 OPENAI_API_KEY 时可用
       OPENAI_API_BASE_URL: xxx
-      # API模型，可选，设置 OPENAI_API_KEY 时可用
+      # API 模型，可选，设置 OPENAI_API_KEY 时可用
       OPENAI_API_MODEL: xxx
       # 反向代理，可选
       API_REVERSE_PROXY: xxx
@@ -226,9 +239,9 @@ services:
       AUTH_SECRET_KEY: xxx
       # 超时，单位毫秒，可选
       TIMEOUT_MS: 60000
-      # Socks代理，可选，和 SOCKS_PROXY_PORT 一起时生效
+      # Socks 代理，可选，和 SOCKS_PROXY_PORT 一起时生效
       SOCKS_PROXY_HOST: xxx
-      # Socks代理端口，可选，和 SOCKS_PROXY_HOST 一起时生效
+      # Socks 代理端口，可选，和 SOCKS_PROXY_HOST 一起时生效
       SOCKS_PROXY_PORT: xxx
       # HTTPS 代理，可选，支持 http，https，socks5
       HTTPS_PROXY: http://xxx:7890
@@ -251,12 +264,12 @@ services:
 | `OPENAI_API_BASE_URL`   | 可选，`OpenAI API` 时可用 |  `API`接口地址  |
 | `OPENAI_API_MODEL`   | 可选，`OpenAI API` 时可用 |  `API`模型  |
 | `API_REVERSE_PROXY`   | 可选，`Web API` 时可用 | `Web API` 反向代理地址 [详情](https://github.com/transitive-bullshit/chatgpt-api#reverse-proxy)    |
-| `SOCKS_PROXY_HOST`   | 可选，和 `SOCKS_PROXY_PORT` 一起时生效 | Socks代理    |
-| `SOCKS_PROXY_PORT`   | 可选，和 `SOCKS_PROXY_HOST` 一起时生效 | Socks代理端口    |
+| `SOCKS_PROXY_HOST`   | 可选，和 `SOCKS_PROXY_PORT` 一起时生效 | Socks 代理    |
+| `SOCKS_PROXY_PORT`   | 可选，和 `SOCKS_PROXY_HOST` 一起时生效 | Socks 代理端口    |
 | `HTTPS_PROXY`   | 可选 | HTTPS 代理，支持 http，https, socks5    |
 | `ALL_PROXY`   | 可选 | 所有代理 代理，支持 http，https, socks5    |
 
-> 注意: `Railway` 修改环境变量会重新 `Deploy`
+> 注意：`Railway` 修改环境变量会重新 `Deploy`
 
 ### 手动打包
 #### 后端服务
@@ -298,7 +311,7 @@ Q: 如果只使用前端页面，在哪里改请求接口？
 
 A: 根目录下 `.env` 文件中的 `VITE_GLOB_API_URL` 字段。
 
-Q: 文件保存时全部爆红?
+Q: 文件保存时全部爆红？
 
 A: `vscode` 请安装项目推荐插件，或手动安装 `Eslint` 插件。
 
@@ -310,7 +323,7 @@ A: 一种可能原因是经过 Nginx 反向代理，开启了 buffer，则 Nginx
 
 贡献之前请先阅读 [贡献指南](./CONTRIBUTING.md)
 
-感谢所有做过贡献的人!
+感谢所有做过贡献的人！
 
 <a href="https://github.com/Chanzhaoyu/chatgpt-web/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=Chanzhaoyu/chatgpt-web" />
